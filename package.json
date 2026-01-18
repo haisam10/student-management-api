@@ -1,0 +1,34 @@
+{
+  "name": "student-management-api",
+  "version": "1.0.0",
+  "description": "A comprehensive RESTful API for managing student records with authentication and file upload capabilities",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "nodemon src/server.js"
+  },
+  "keywords": [
+    "api",
+    "rest",
+    "student",
+    "management",
+    "express",
+    "mongodb"
+  ],
+  "author": "Developer",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.2",
+    "mongoose": "^7.0.0",
+    "bcryptjs": "^2.4.3",
+    "jsonwebtoken": "^9.0.0",
+    "dotenv": "^16.0.3",
+    "multer": "^1.4.5-lts.1",
+    "joi": "^17.9.1",
+    "cors": "^2.8.5",
+    "express-validator": "^7.0.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.22"
+  }
+}
