@@ -9,6 +9,20 @@ connectDB();
 
 app.use(express.json()); // 🔥 must
 
+// ✅ CORS middleware
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, PATCH, OPTIONS");
+  res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  
+  // Handle preflight requests
+  if (req.method === "OPTIONS") {
+    return res.sendStatus(200);
+  }
+  
+  next();
+});
+
 // home route
 app.get("/home", (req, res) => {
   res.send("Student Management API is running...");
@@ -23,17 +37,20 @@ app.get("/students", async (req, res) => {
 // ✅ POST - add student
 app.post("/students", async (req, res) => {
   try {
-    const { name, dept } = req.body;
+    const { studentId, name, dept, section, batch } = req.body;
 
-    if (!name || !dept) {
-      return res.status(400).json({ message: "Name and Dept required" });
+    if (!studentId || !name || !dept || !section || !batch) {
+      return res.status(400).json({ message: "All fields are required" });
     }
 
-    const student = new Student({ name, dept });
+    const student = new Student({ studentId, name, dept, section, batch });
     await student.save();
 
     res.status(201).json(student);
   } catch (err) {
+    if (err.code === 11000) {
+      return res.status(400).json({ message: "Student ID already exists" });
+    }
     res.status(500).json({ message: "Error adding student" });
   }
 });
@@ -41,11 +58,11 @@ app.post("/students", async (req, res) => {
 // ✅ PUT - update student by ID
 app.put("/students/:id", async (req, res) => {
   try {
-    const { name, dept } = req.body;
+    const { studentId, name, dept, section, batch } = req.body;
 
     const student = await Student.findByIdAndUpdate(
       req.params.id,
-      { name, dept },
+      { studentId, name, dept, section, batch },
       { new: true, runValidators: true }
     );
 
