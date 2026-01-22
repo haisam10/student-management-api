@@ -1,32 +1,19 @@
 {
-  "name": "student-management-api",
+  "name": "express-server",
   "version": "1.0.0",
-  "description": "A comprehensive RESTful API for managing student records with authentication and file upload capabilities",
-  "main": "src/server.js",
+  "main": "index.js",
   "scripts": {
-    "start": "node src/server.js",
-    "dev": "nodemon src/server.js"
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [
-    "api",
-    "rest",
-    "student",
-    "management",
-    "express",
-    "mongodb"
-  ],
-  "author": "Developer",
+  "keywords": [],
+  "author": "",
   "license": "ISC",
+  "description": "",
   "dependencies": {
-    "bcryptjs": "^2.4.3",
-    "cors": "^2.8.5",
-    "dotenv": "^16.0.3",
-    "express": "^4.18.2",
-    "express-validator": "^7.0.0",
-    "joi": "^17.9.1",
-    "jsonwebtoken": "^9.0.0",
-    "mongoose": "^7.0.0",
-    "multer": "^1.4.5-lts.1"
+    "express": "^5.2.1",
+    "mongoose": "^9.1.1"
   },
   "devDependencies": {
     "nodemon": "^3.1.11"
