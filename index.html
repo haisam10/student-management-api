@@ -223,6 +223,7 @@
         .btn-update:hover {
             transform: translateY(-1px);
             box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+            cursor: pointer;
         }
 
         .btn-delete {
@@ -236,6 +237,7 @@
         .btn-delete:hover {
             transform: translateY(-1px);
             box-shadow: 0 4px 12px rgba(255, 56, 96, 0.4);
+            cursor: pointer;
         }
 
         .students-section {
@@ -448,7 +450,30 @@
         @media (max-width: 1024px) {
             .stats-and-chart {
                 grid-template-columns: 1fr;
-            }
+         
+
+        /* Cursor Trail Animation */
+        .cursor-dot {
+            position: fixed;
+            width: 8px;
+            height: 8px;
+            background: var(--primary-color);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+            box-shadow: 0 0 12px rgba(0, 212, 255, 0.6);
+        }
+
+        .cursor-dot-outline {
+            position: fixed;
+            width: 32px;
+            height: 32px;
+            border: 2px solid var(--primary-color);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9998;
+            opacity: 0.5;
+        }   }
         }
 
             .header {
@@ -583,6 +608,55 @@
     </div>
 
     <script>
+        // Cursor Animation
+        const cursorDot = document.createElement('div');
+        const cursorDotOutline = document.createElement('div');
+        cursorDot.classList.add('cursor-dot');
+        cursorDotOutline.classList.add('cursor-dot-outline');
+        document.body.appendChild(cursorDot);
+        document.body.appendChild(cursorDotOutline);
+
+        let mouseX = 0;
+        let mouseY = 0;
+        let dotX = 0;
+        let dotY = 0;
+        let outlineX = 0;
+        let outlineY = 0;
+
+        document.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+        });
+
+        function animateCursor() {
+            dotX += (mouseX - dotX) * 0.2;
+            dotY += (mouseY - dotY) * 0.2;
+            
+            outlineX += (mouseX - outlineX) * 0.05;
+            outlineY += (mouseY - outlineY) * 0.05;
+
+            cursorDot.style.left = dotX + 'px';
+            cursorDot.style.top = dotY + 'px';
+            
+            cursorDotOutline.style.left = outlineX + 'px';
+            cursorDotOutline.style.top = outlineY + 'px';
+
+            requestAnimationFrame(animateCursor);
+        }
+
+        animateCursor();
+
+        // Hide cursor trail when mouse leaves window
+        document.addEventListener('mouseleave', () => {
+            cursorDot.style.opacity = '0';
+            cursorDotOutline.style.opacity = '0';
+        });
+
+        document.addEventListener('mouseenter', () => {
+            cursorDot.style.opacity = '1';
+            cursorDotOutline.style.opacity = '1';
+        });
+
         const API_BASE_URL = "http://localhost:5000";
         let students = [];
         let editingId = null;
