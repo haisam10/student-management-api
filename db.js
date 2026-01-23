@@ -1,9 +1,10 @@
+require("dotenv").config();
 const mongoose = require("mongoose");
 
 const connectDB = async () => {
   try {
     await mongoose.connect(
-      "mongodb+srv://admin:admin@cluster0.xhczywn.mongodb.net/studentDB",
+      process.env.MONGODB_URI || "mongodb+srv://admin:admin@cluster0.xhczywn.mongodb.net/studentDB",
       {
         serverSelectionTimeoutMS: 5000,
       }

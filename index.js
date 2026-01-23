@@ -1,13 +1,17 @@
+require("dotenv").config();
 const express = require("express");
 const app = express();
-const port = 5000;
+const port = process.env.PORT || 5000;
 
 const connectDB = require("./db");
 const Student = require("./models/Student");
+const authRoutes = require("./routes/auth");
+const { verifyToken, isAdmin } = require("./middleware/auth");
 
 connectDB();
 
 app.use(express.json()); // 🔥 must
+app.use(express.static(".")); // Serve static files including index.html
 
 // ✅ CORS middleware
 app.use((req, res, next) => {
@@ -23,19 +27,22 @@ app.use((req, res, next) => {
   next();
 });
 
+// ✅ Authentication routes (no token required)
+app.use("/api/auth", authRoutes);
+
 // home route
 app.get("/home", (req, res) => {
   res.send("Student Management API is running...");
 });
 
-// ✅ GET - all students
-app.get("/students", async (req, res) => {
+// ✅ GET - all students (Protected - Admin only)
+app.get("/students", verifyToken, isAdmin, async (req, res) => {
   const students = await Student.find();
   res.json(students);
 });
 
-// ✅ POST - add student
-app.post("/students", async (req, res) => {
+// ✅ POST - add student (Protected - Admin only)
+app.post("/students", verifyToken, isAdmin, async (req, res) => {
   try {
     const { studentId, name, dept, section, batch } = req.body;
 
@@ -55,8 +62,8 @@ app.post("/students", async (req, res) => {
   }
 });
 
-// ✅ PUT - update student by ID
-app.put("/students/:id", async (req, res) => {
+// ✅ PUT - update student by ID (Protected - Admin only)
+app.put("/students/:id", verifyToken, isAdmin, async (req, res) => {
   try {
     const { studentId, name, dept, section, batch } = req.body;
 
@@ -76,8 +83,8 @@ app.put("/students/:id", async (req, res) => {
   }
 });
 
-// ✅ DELETE - delete student by ID
-app.delete("/students/:id", async (req, res) => {
+// ✅ DELETE - delete student by ID (Protected - Admin only)
+app.delete("/students/:id", verifyToken, isAdmin, async (req, res) => {
   try {
     const student = await Student.findByIdAndDelete(req.params.id);
 
@@ -94,10 +101,10 @@ app.delete("/students/:id", async (req, res) => {
   }
 });
 
-// ✅ PATCH - partial update student by ID
-app.patch("/students/:id", async (req, res) => {
+// ✅ PATCH - partial update student by ID (Protected - Admin only)
+app.patch("/students/:id", verifyToken, isAdmin, async (req, res) => {
   try {
-    const updates = req.body; // only sent fields will update
+    const updates = req.body;
 
     const student = await Student.findByIdAndUpdate(
       req.params.id,
